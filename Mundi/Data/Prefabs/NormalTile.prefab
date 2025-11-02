@@ -1,23 +1,7 @@
 {
-  "Name" : "스태틱 메시_1",
+  "Name" : "AStaticMeshActor_0",
   "OwnedComponents" : [{
-      "BoxExtent" : [1.000000, 1.000000, 1.000000],
-      "Id" : 761,
-      "ParentId" : 759,
-      "RelativeLocation" : [0.000000, 0.000000, 0.000000],
-      "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
-      "RelativeScale" : [1.000000, 1.000000, 1.000000],
-      "Type" : "UBoxComponent",
-      "bBlockComponent" : false,
-      "bGenerateOverlapEvents" : true,
-      "bHiddenInGame" : false,
-      "bIsActive" : true,
-      "bIsVisible" : true,
-      "bShapeHiddenInGame" : true,
-      "bShapeIsVisible" : true,
-      "bTickEnabled" : true
-    }, {
-      "Id" : 759,
+      "Id" : 4336,
       "MaterialSlots" : [{
           "Overrides" : {
             "Scalars" : {
@@ -35,7 +19,7 @@
           "Type" : "UMaterialInstanceDynamic"
         }],
       "ParentId" : 0,
-      "RelativeLocation" : [0.000000, 0.000000, 0.000000],
+      "RelativeLocation" : [0.000000, -0.010918, 0.000000],
       "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
       "RelativeScale" : [1.000000, 1.000000, 1.000000],
       "StaticMesh" : "Data/Model/2/19212_autosave2.obj",
@@ -46,7 +30,30 @@
       "bIsActive" : true,
       "bIsVisible" : true,
       "bTickEnabled" : true
+    }, {
+      "BoxExtent" : [1.000000, 1.000000, 1.000000],
+      "Id" : 4338,
+      "ParentId" : 4336,
+      "RelativeLocation" : [0.000000, 0.000000, 0.000000],
+      "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
+      "RelativeScale" : [1.000000, 1.000000, 1.000000],
+      "Type" : "UBoxComponent",
+      "bBlockComponent" : false,
+      "bGenerateOverlapEvents" : true,
+      "bHiddenInGame" : false,
+      "bIsActive" : true,
+      "bIsVisible" : true,
+      "bShapeHiddenInGame" : true,
+      "bShapeIsVisible" : true,
+      "bTickEnabled" : true
+    }, {
+      "ScriptFilePath" : "Data/Scripts/Tile.lua",
+      "Type" : "ULuaScriptComponent",
+      "bIsActive" : true,
+      "bTickEnabled" : true
     }],
-  "RootComponentId" : 759,
-  "Type" : "AStaticMeshActor"
+  "RootComponentId" : 4336,
+  "Tag" : "Tile",
+  "Type" : "AStaticMeshActor",
+  "bActorHiddenInGame" : false
 }
