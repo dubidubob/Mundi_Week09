@@ -1,0 +1,47 @@
+{
+  "Name" : "스태틱 메시_0",
+  "OwnedComponents" : [{
+      "Id" : 1492,
+      "MaterialSlots" : [{
+          "AssetPath" : "texture",
+          "Type" : "UMaterial"
+        }],
+      "ParentId" : 0,
+      "RelativeLocation" : [33.017860, 17.220016, 48.968914],
+      "RelativeRotationEuler" : [0.000000, -0.000000, 0.000000],
+      "RelativeScale" : [1.000000, 1.000000, 1.000000],
+      "StaticMesh" : "Data/cube-tex.obj",
+      "Type" : "UStaticMeshComponent",
+      "bBlockComponent" : false,
+      "bGenerateOverlapEvents" : true,
+      "bHiddenInGame" : false,
+      "bIsActive" : true,
+      "bIsVisible" : true,
+      "bTickEnabled" : true
+    }, {
+      "BoxExtent" : [0.500000, 0.500000, 0.500000],
+      "Id" : 4239,
+      "ParentId" : 1492,
+      "RelativeLocation" : [0.000000, 0.000000, 0.000000],
+      "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
+      "RelativeScale" : [1.000000, 1.000000, 1.000000],
+      "Type" : "UBoxComponent",
+      "bBlockComponent" : false,
+      "bGenerateOverlapEvents" : true,
+      "bHiddenInGame" : false,
+      "bIsActive" : true,
+      "bIsVisible" : true,
+      "bShapeHiddenInGame" : true,
+      "bShapeIsVisible" : true,
+      "bTickEnabled" : true
+    }, {
+      "ScriptFilePath" : "Data/Scripts/Player.lua",
+      "Type" : "ULuaScriptComponent",
+      "bIsActive" : true,
+      "bTickEnabled" : true
+    }],
+  "RootComponentId" : 1492,
+  "Tag" : "player",
+  "Type" : "AStaticMeshActor",
+  "bActorHiddenInGame" : false
+}
