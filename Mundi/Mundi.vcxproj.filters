@@ -503,6 +503,9 @@
     <ClCompile Include="Source\Runtime\Engine\GameFramework\Camera\CamMod_Vignette.cpp">
       <Filter>Source\Runtime\Engine\GameFramework\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\Components\SpringArmComponent.cpp">
+      <Filter>Source\Runtime\Engine\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1093,6 +1096,9 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\GameFramework\Camera\CamMod_Vignette.h">
       <Filter>Source\Runtime\Engine\GameFramework\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\Components\SpringArmComponent.h">
+      <Filter>Source\Runtime\Engine\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

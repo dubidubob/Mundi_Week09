@@ -8,6 +8,7 @@
 #include "BillboardComponent.h"
 #include "PlayerCameraManager.h"
 #include "AudioComponent.h"
+#include "SpringArmComponent.h"
 #include <tuple>
 
 FLuaManager::FLuaManager()
@@ -206,6 +207,45 @@ FLuaManager::FLuaManager()
             return GWorld->GetFirstPlayerCameraManager();
         }
     );
+    SharedLib.set_function("GetWorldLocation",
+        [](FGameObject& GameObject)->FVector
+        {
+            AActor* Owner = GameObject.GetOwner();
+            USpringArmComponent* SpringArm = nullptr;
+
+            if (Owner)
+            {
+                // 여기서 'UClass' 메타객체를 넘겨야 함
+                SpringArm = static_cast<USpringArmComponent*>(
+                    Owner->GetComponent(USpringArmComponent::StaticClass())
+                    );
+            }
+
+            if (SpringArm)
+            {
+                return SpringArm->GetWorldLocation();
+            }
+
+            return FVector(0.f, 0.f, 0.f);
+        }
+    );
+    SharedLib.set_function("DeleteObject", sol::overload(
+        [](const FGameObject& GameObject)
+        {
+            for (TObjectIterator<AActor> It; It; ++It)
+            {
+                AActor* Actor = *It;
+
+                if (Actor->UUID == GameObject.UUID)
+                {
+                    Actor->Destroy();   // 지연 삭제 요청 (즉시 삭제하면 터짐)
+                    break;
+                }
+            }
+        }
+    ));
+
+   
     SharedLib.set_function("SetPlayerForward",
         [](FGameObject& GameObject, FVector Direction)
         {

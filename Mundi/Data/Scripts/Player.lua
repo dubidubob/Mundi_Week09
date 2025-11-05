@@ -23,6 +23,8 @@ local PlayerInitVelocity = Vector(0, 0, 0)
 local CameraLocation     = PlayerInitPosition
 local ForwardVector      = Vector(1, 0, 0)
 
+local SpringArm = nil
+
 function AddID(id)
     if not ActiveIDs[id] then
         ActiveIDs[id] = true
@@ -74,6 +76,9 @@ function BeginPlay()
     Obj.Location = PlayerInitPosition
     Obj.Velocity = PlayerInitVelocity 
     
+    AddComponent(Obj, "USpringArmComponent")
+    SpringArm = GetComponent(Obj, "USpringArmComponent")
+
     local Camera = GetCamera()
     if Camera then
         Camera:SetCameraForward(ForwardVector)
@@ -217,13 +222,14 @@ function Rotate()
     local MouseDeltaY = MouseDelta.Y
 
     local Yaw = MouseDeltaX * YawSensitivity
+    local Pitch = MouseDeltaY * PitchSensitivity
+
     ForwardVector = RotateAroundAxis(ForwardVector, UpVector, Yaw)
     ForwardVector = NormalizeCopy(ForwardVector)
 
     local RightVector = FVector.Cross(UpVector, ForwardVector)
     RightVector = NormalizeCopy(RightVector)
 
-    local Pitch = MouseDeltaY * PitchSensitivity
     local Candidate = RotateAroundAxis(ForwardVector, RightVector, Pitch)
 
     -- 수직 잠김 방지
@@ -268,22 +274,45 @@ function CameraMove()
 end
 
 function SetCamera()
-    local BackDistance = 7.0
-    local UpDistance   = 2.0
+    -- local BackDistance = 7.0
+    -- local UpDistance   = 2.0
 
+    -- local Camera = GetCamera()
+    -- if Camera then
+    --     CameraLocation = Obj.Location + (ForwardVector * -BackDistance) + (UpVector * UpDistance)
+    --     Camera:SetLocation(CameraLocation)
+    -- end
     local Camera = GetCamera()
-    if Camera then
-        CameraLocation = Obj.Location + (ForwardVector * -BackDistance) + (UpVector * UpDistance)
-        Camera:SetLocation(CameraLocation)
+    -- if Camera then
+    --     CameraLocation = Obj.Location + (ForwardVector * -BackDistance) + (UpVector * UpDistance)
+    --     Camera:SetLocation(CameraLocation)
+    -- end
+    if not (Camera and SpringArm) then
+        return
     end
+
+    local ArmLoc = GetWorldLocation(Obj)
+    CameraLocation = ArmLoc
+    Camera:SetLocation(ArmLoc)
+    print(string.format("[SpringArm] Camera Pos: X=%.2f, Y=%.2f, Z=%.2f", ArmLoc.X, ArmLoc.Y, ArmLoc.Z))
 end
 
 function Billboard()
     local Camera = GetCamera()
-    if Camera then
-        local Eye = CameraLocation
-        local At = Obj.Location
-        local Direction = Vector(At.X - Eye.X, At.Y - Eye.Y, At.Z - Eye.Z)
-        Camera:SetCameraForward(Direction)
+    -- if Camera then
+    --     local Eye = CameraLocation
+    --     local At = Obj.Location
+    --     local Direction = Vector(At.X - Eye.X, At.Y - Eye.Y, At.Z - Eye.Z)
+    --     print(Direction)
+    --     Camera:SetCameraForward(Direction)
+    -- end
+    if not (Camera and SpringArm) then
+        return
     end
+
+    local Eye = GetWorldLocation(Obj)
+    local At = Obj.Location + Vector(0, 0, 1)
+    local Direction = Vector(At.X - Eye.X, At.Y - Eye.Y, At.Z - Eye.Z)
+    print(Direction)
+    Camera:SetCameraForward(Direction)
 end
