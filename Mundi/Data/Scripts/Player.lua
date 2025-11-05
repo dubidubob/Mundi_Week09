@@ -297,8 +297,9 @@ function SetCamera()
     CamForward = NormalizeCopy(CamForward)
 
     -- 거리 값 (SpringArm 길이 사용 가능)
-    local BackDistance = 10
-    local UpDistance   = 5
+    local pitchFactor = (CamForward.Z + 0.75) * 1.5
+    local BackDistance = 10 - pitchFactor * 4
+    local UpDistance   = 5 - pitchFactor * 1.5
 
     -- ① 기본 좌우 회전(Yaw)은 캐릭터 기준으로 유지
     -- ② 상하 회전(Pitch)은 CamForward 기반으로 반영
