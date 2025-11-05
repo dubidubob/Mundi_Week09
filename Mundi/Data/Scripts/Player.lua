@@ -5,7 +5,7 @@ local VelocityZ = 0
 local JumpSpeed = 6
 
 local YawSensitivity        = 0.005
-local PitchSensitivity      = 0.0025
+local PitchSensitivity      = 0.007
 
 local MovementDelta = 10
 
@@ -224,26 +224,36 @@ function Rotate()
     local Yaw = MouseDeltaX * YawSensitivity
     local Pitch = MouseDeltaY * PitchSensitivity
 
+    -- ---------------------------
+    -- 1. 캐릭터용 평면 회전 (Yaw만)
+    -- ---------------------------
     ForwardVector = RotateAroundAxis(ForwardVector, UpVector, Yaw)
     ForwardVector = NormalizeCopy(ForwardVector)
 
+    local FlatForward = Vector(ForwardVector.X, ForwardVector.Y, 0)
+    FlatForward = NormalizeCopy(FlatForward)
+    local LookAt = Vector(-FlatForward.X, -FlatForward.Y, 0)
+    SetPlayerForward(Obj, LookAt)
+
+    -- ---------------------------
+    -- 2. 카메라용 가짜 Forward (Pitch 포함)
+    -- ---------------------------
+    if not GlobalConfig.CameraForward then
+        GlobalConfig.CameraForward = Vector(ForwardVector.X, ForwardVector.Y, ForwardVector.Z)
+    end
+
     local RightVector = FVector.Cross(UpVector, ForwardVector)
     RightVector = NormalizeCopy(RightVector)
-
-    local Candidate = RotateAroundAxis(ForwardVector, RightVector, Pitch)
+    GlobalConfig.CameraForward = RotateAroundAxis(GlobalConfig.CameraForward, RightVector, Pitch)
 
     -- 수직 잠김 방지
-    if (Candidate.Z > 0.4) then -- 아래로 각도 제한
-        Candidate.Z = 0.4
+    if (GlobalConfig.CameraForward.Z > 0.4) then
+        GlobalConfig.CameraForward.Z = 0.4
     end
-    if (Candidate.Z < -0.75) then -- 위로 각도 제한
-        Candidate.Z = -0.75
+    if (GlobalConfig.CameraForward.Z < -0.75) then
+        GlobalConfig.CameraForward.Z = -0.75
     end
-
-    ForwardVector = NormalizeCopy(Candidate)
-
-    LootAt = Vector(-ForwardVector.X, -ForwardVector.Y, 0)
-    SetPlayerForward(Obj, LootAt)
+    GlobalConfig.CameraForward = NormalizeCopy(GlobalConfig.CameraForward)
 end
 
 function IsGrounded()
@@ -274,45 +284,37 @@ function CameraMove()
 end
 
 function SetCamera()
-    -- local BackDistance = 7.0
-    -- local UpDistance   = 2.0
-
-    -- local Camera = GetCamera()
-    -- if Camera then
-    --     CameraLocation = Obj.Location + (ForwardVector * -BackDistance) + (UpVector * UpDistance)
-    --     Camera:SetLocation(CameraLocation)
-    -- end
     local Camera = GetCamera()
-    -- if Camera then
-    --     CameraLocation = Obj.Location + (ForwardVector * -BackDistance) + (UpVector * UpDistance)
-    --     Camera:SetLocation(CameraLocation)
-    -- end
     if not (Camera and SpringArm) then
         return
     end
 
-    local ArmLoc = GetWorldLocation(Obj)
-    CameraLocation = ArmLoc
-    Camera:SetLocation(ArmLoc)
-    print(string.format("[SpringArm] Camera Pos: X=%.2f, Y=%.2f, Z=%.2f", ArmLoc.X, ArmLoc.Y, ArmLoc.Z))
+    -- 캐릭터 기준 기본 위치 (Yaw 포함)
+    local BaseLocation = GetWorldLocation(Obj)
+
+    -- 가짜 Forward (Pitch 포함된 카메라용 벡터)
+    local CamForward = GlobalConfig.CameraForward or ForwardVector
+    CamForward = NormalizeCopy(CamForward)
+
+    -- 거리 값 (SpringArm 길이 사용 가능)
+    local BackDistance = 10
+    local UpDistance   = 5
+
+    -- ① 기본 좌우 회전(Yaw)은 캐릭터 기준으로 유지
+    -- ② 상하 회전(Pitch)은 CamForward 기반으로 반영
+    -- 즉, 캐릭터는 수평 기준으로 돌고, 카메라는 위/아래 반영
+    local Offset = (CamForward * -BackDistance) + (UpVector * UpDistance)
+    CameraLocation = BaseLocation + Offset
+
+    Camera:SetLocation(CameraLocation)
 end
 
 function Billboard()
     local Camera = GetCamera()
-    -- if Camera then
-    --     local Eye = CameraLocation
-    --     local At = Obj.Location
-    --     local Direction = Vector(At.X - Eye.X, At.Y - Eye.Y, At.Z - Eye.Z)
-    --     print(Direction)
-    --     Camera:SetCameraForward(Direction)
-    -- end
-    if not (Camera and SpringArm) then
-        return
-    end
+    if not Camera then return end
 
-    local Eye = GetWorldLocation(Obj)
+    local Eye = CameraLocation
     local At = Obj.Location + Vector(0, 0, 1)
     local Direction = Vector(At.X - Eye.X, At.Y - Eye.Y, At.Z - Eye.Z)
-    print(Direction)
     Camera:SetCameraForward(Direction)
 end
