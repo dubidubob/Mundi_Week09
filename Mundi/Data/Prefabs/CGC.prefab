@@ -1,12 +1,7 @@
 {
   "Name" : "스태틱 메시_0",
   "OwnedComponents" : [{
-      "ScriptFilePath" : "Data/Scripts/coach.lua",
-      "Type" : "ULuaScriptComponent",
-      "bIsActive" : true,
-      "bTickEnabled" : true
-    }, {
-      "Id" : 802,
+      "Id" : 804,
       "MaterialSlots" : [{
           "AssetPath" : "Material_0",
           "Type" : "UMaterial"
@@ -24,15 +19,20 @@
       "bIsVisible" : true,
       "bTickEnabled" : true
     }, {
-      "Id" : 842,
-      "ParentId" : 802,
+      "ScriptFilePath" : "Data/Scripts/coach.lua",
+      "Type" : "ULuaScriptComponent",
+      "bIsActive" : true,
+      "bTickEnabled" : true
+    }, {
+      "Id" : 805,
+      "ParentId" : 804,
       "Pitch" : 1.000000,
       "RelativeLocation" : [0.000000, 0.000000, 0.000000],
       "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
       "RelativeScale" : [1.000000, 1.000000, 1.000000],
       "Sounds" : ["Data/Audio/CGC1.wav", "Data/Audio/CGC2.wav", "Data/Audio/SHC1.wav", "Data/Audio/SHC2.wav"],
       "Type" : "UAudioComponent",
-      "Volume" : 1.000000,
+      "Volume" : 2.000000,
       "bAutoPlay" : true,
       "bHiddenInGame" : false,
       "bIsActive" : true,
@@ -40,7 +40,7 @@
       "bIsVisible" : true,
       "bTickEnabled" : true
     }],
-  "RootComponentId" : 802,
+  "RootComponentId" : 804,
   "Tag" : "",
   "Type" : "AStaticMeshActor",
   "bActorHiddenInGame" : false,

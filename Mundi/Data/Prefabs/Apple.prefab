@@ -1,7 +1,14 @@
 {
   "Name" : "스태틱 메시_0",
   "OwnedComponents" : [{
-      "Id" : 847,
+      "PivotTranslation" : [0.000000, 0.000000, 0.000000],
+      "RotationRate" : [0.000000, 300.000000, 0.000000],
+      "Type" : "URotatingMovementComponent",
+      "bIsActive" : true,
+      "bRotationInLocalSpace" : true,
+      "bTickEnabled" : true
+    }, {
+      "Id" : 2066,
       "MaterialSlots" : [{
           "AssetPath" : "MatID_1",
           "Type" : "UMaterial"
@@ -24,15 +31,24 @@
       "bIsActive" : true,
       "bTickEnabled" : true
     }, {
-      "PivotTranslation" : [0.000000, 0.000000, 0.000000],
-      "RotationRate" : [0.000000, 300.000000, 0.000000],
-      "Type" : "URotatingMovementComponent",
+      "Id" : 2069,
+      "ParentId" : 2066,
+      "Pitch" : 1.000000,
+      "RelativeLocation" : [0.000000, 0.000000, 0.000000],
+      "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
+      "RelativeScale" : [1.000000, 1.000000, 1.000000],
+      "Sounds" : ["Data/Audio/HitFireball.wav", "Data/Audio/Shot.wav"],
+      "Type" : "UAudioComponent",
+      "Volume" : 1.000000,
+      "bAutoPlay" : false,
+      "bHiddenInGame" : false,
       "bIsActive" : true,
-      "bRotationInLocalSpace" : true,
+      "bIsLooping" : false,
+      "bIsVisible" : true,
       "bTickEnabled" : true
     }, {
-      "Id" : 848,
-      "ParentId" : 847,
+      "Id" : 2070,
+      "ParentId" : 2066,
       "RelativeLocation" : [0.000000, 0.000000, 0.000000],
       "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
       "RelativeScale" : [1.000000, 1.000000, 1.000000],
@@ -46,24 +62,8 @@
       "bShapeHiddenInGame" : true,
       "bShapeIsVisible" : true,
       "bTickEnabled" : true
-    }, {
-      "Id" : 849,
-      "ParentId" : 847,
-      "Pitch" : 1.000000,
-      "RelativeLocation" : [0.000000, 0.000000, 0.000000],
-      "RelativeRotationEuler" : [0.000000, 0.000000, 0.000000],
-      "RelativeScale" : [1.000000, 1.000000, 1.000000],
-      "Sounds" : ["Data/Audio/HitFireball.wav"],
-      "Type" : "UAudioComponent",
-      "Volume" : 1.000000,
-      "bAutoPlay" : true,
-      "bHiddenInGame" : false,
-      "bIsActive" : true,
-      "bIsLooping" : false,
-      "bIsVisible" : true,
-      "bTickEnabled" : true
     }],
-  "RootComponentId" : 847,
+  "RootComponentId" : 2066,
   "Tag" : "",
   "Type" : "AStaticMeshActor",
   "bActorHiddenInGame" : false,
