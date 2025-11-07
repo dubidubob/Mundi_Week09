@@ -10,6 +10,14 @@
 #include "AudioComponent.h"
 #include <tuple>
 
+sol::object MakeCompProxy(sol::state_view SolState, void* Instance, UClass* Class) {
+    BuildBoundClass(Class);
+    LuaComponentProxy Proxy;
+    Proxy.Instance = Instance;
+    Proxy.Class = Class;
+    return sol::make_object(SolState, std::move(Proxy));
+}
+
 FLuaManager::FLuaManager()
 {
     Lua = new sol::state();
@@ -364,38 +372,11 @@ sol::environment FLuaManager::CreateEnvironment()
     return Env;
 }
 
-static void BuildBoundClass(UClass* Class) {
-    if (!Class) return;
-    if (GBoundClasses.count(Class)) return;
-    
-    FBoundClassDesc Desc;
-    Desc.Class = Class;
-
-    for (auto& Property : Class->GetAllProperties()) {
-        if (!Property.bIsEditAnywhere) continue;
-
-        FBoundProp BoundProp;
-        BoundProp.Property = &Property;
-        FString LuaName =Property.Name;
-
-        Desc.PropsByName.emplace(LuaName, BoundProp);
-    }
-    GBoundClasses.emplace(Class, std::move(Desc));
-}
-
 void FLuaManager::RegisterComponentProxy(sol::state& Lua) {
     Lua.new_usertype<LuaComponentProxy>("Component",
         sol::meta_function::index,     &LuaComponentProxy::Index,
         sol::meta_function::new_index, &LuaComponentProxy::NewIndex
     );
-}
-
-static sol::object MakeCompProxy(sol::state_view SolState, void* Instance, UClass* Class) {
-    BuildBoundClass(Class);
-    LuaComponentProxy Proxy;
-    Proxy.Instance = Instance;
-    Proxy.Class = Class;
-    return sol::make_object(SolState, std::move(Proxy));
 }
 
 void FLuaManager::ExposeAllComponentsToLua()
@@ -445,33 +426,33 @@ void FLuaManager::ExposeAllComponentsToLua()
 // 특정 컴포넌트의 함수 추가 바인딩
 void FLuaManager::ExposeComponentFunctions()
 {
-    // --- UBillboardComponent 바인딩 추가 ---
-    UClass* BillboardCompClass = UBillboardComponent::StaticClass();
-    if (BillboardCompClass)
-    {
-        // UBillboardComponent용 함수 테이블을 가져오거나 생성합니다.
-        sol::table FuncTable = GComponentFunctionTables.count(BillboardCompClass)
-            ? GComponentFunctionTables[BillboardCompClass] // 이미 있다면 가져오기
-            : Lua->create_table();                         // 없다면 새로 생성
+    //// --- UBillboardComponent 바인딩 추가 ---
+    //UClass* BillboardCompClass = UBillboardComponent::StaticClass();
+    //if (BillboardCompClass)
+    //{
+    //    // UBillboardComponent용 함수 테이블을 가져오거나 생성합니다.
+    //    sol::table FuncTable = GComponentFunctionTables.count(BillboardCompClass)
+    //        ? GComponentFunctionTables[BillboardCompClass] // 이미 있다면 가져오기
+    //        : Lua->create_table();                         // 없다면 새로 생성
 
-        // SetTextureName 바인딩
-        // (Lua에서는 더 간단하게 SetTexture로 노출)
-        FuncTable.set_function("SetTexture",
-            [](LuaComponentProxy& Proxy, const FString& TexturePath)
-            {
-                // 타입 안정성 확인
-                if (Proxy.Instance && Proxy.Class == UBillboardComponent::StaticClass())
-                {
-                    // 실제 인스턴스로 캐스팅 후 C++ 함수 호출
-                    auto* Comp = static_cast<UBillboardComponent*>(Proxy.Instance);
-                    Comp->SetTexture(TexturePath);
-                }
-            }
-        );
+    //    // SetTextureName 바인딩
+    //    // (Lua에서는 더 간단하게 SetTexture로 노출)
+    //    FuncTable.set_function("SetTexture",
+    //        [](LuaComponentProxy& Proxy, const FString& TexturePath)
+    //        {
+    //            // 타입 안정성 확인
+    //            if (Proxy.Instance && Proxy.Class == UBillboardComponent::StaticClass())
+    //            {
+    //                // 실제 인스턴스로 캐스팅 후 C++ 함수 호출
+    //                auto* Comp = static_cast<UBillboardComponent*>(Proxy.Instance);
+    //                Comp->SetTexture(TexturePath);
+    //            }
+    //        }
+    //    );
 
-        // 전역 맵에 테이블 등록 (필수)
-        GComponentFunctionTables[BillboardCompClass] = FuncTable;
-    }
+    //    // 전역 맵에 테이블 등록 (필수)
+    //    GComponentFunctionTables[BillboardCompClass] = FuncTable;
+    //}
 }
 
 void FLuaManager::ExposeGlobalFunctions()
@@ -629,27 +610,27 @@ void FLuaManager::ExposeGlobalFunctions()
     );
 
     // --- UAudioComponent bindings ---
-    UClass* AudioCompClass = UAudioComponent::StaticClass();
-    if (AudioCompClass)
-    {
-        sol::table FuncTable = GComponentFunctionTables.count(AudioCompClass)
-            ? GComponentFunctionTables[AudioCompClass]
-            : Lua->create_table();
+    //UClass* AudioCompClass = UAudioComponent::StaticClass();
+    //if (AudioCompClass)
+    //{
+    //    sol::table FuncTable = GComponentFunctionTables.count(AudioCompClass)
+    //        ? GComponentFunctionTables[AudioCompClass]
+    //        : Lua->create_table();
 
-        FuncTable.set_function("PlayOneShot",
-            [](LuaComponentProxy& Proxy, uint32 SlotIndex)
-            {
-                if (Proxy.Instance && Proxy.Class == UAudioComponent::StaticClass())
-                {
-                    auto* Comp = static_cast<UAudioComponent*>(Proxy.Instance);
-                    Comp->PlaySlot(SlotIndex);
-                    // UE_LOG("Sound Slot Index : %d", SlotIndex);
-                }
-            }
-        );
+    //    FuncTable.set_function("PlayOneShot",
+    //        [](LuaComponentProxy& Proxy, uint32 SlotIndex)
+    //        {
+    //            if (Proxy.Instance && Proxy.Class == UAudioComponent::StaticClass())
+    //            {
+    //                auto* Comp = static_cast<UAudioComponent*>(Proxy.Instance);
+    //                Comp->PlaySlot(SlotIndex);
+    //                // UE_LOG("Sound Slot Index : %d", SlotIndex);
+    //            }
+    //        }
+    //    );
 
-        GComponentFunctionTables[AudioCompClass] = FuncTable;
-    }
+    //    GComponentFunctionTables[AudioCompClass] = FuncTable;
+    //}
 }
 
 bool FLuaManager::LoadScriptInto(sol::environment& Env, const FString& Path) {
@@ -672,9 +653,7 @@ void FLuaManager::ShutdownBeforeLuaClose()
 {
     CoroutineSchedular.ShutdownBeforeLuaClose();
     
-    for (auto& Pair : GComponentFunctionTables)
-        Pair.second = sol::nil;
-    GComponentFunctionTables.Empty();
+    FLuaBindRegistry::Get().Reset();
     
     SharedLib = sol::nil;
 }
@@ -696,6 +675,3 @@ sol::protected_function FLuaManager::GetFunc(sol::environment& Env, const char* 
     
     return Func;
 }
-
-
-

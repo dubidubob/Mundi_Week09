@@ -7,8 +7,9 @@
 class FLuaBindRegistry
 {
 public:
+    ~FLuaBindRegistry() { FunctionTables.Empty(); Builders.Empty(); }
     using BuildFunc = void(*)(sol::state_view, sol::table&);
-
+    
     static FLuaBindRegistry& Get()
     {
         static FLuaBindRegistry Singleton;
@@ -52,8 +53,7 @@ public:
 
     void Reset()
     {
-        Builders.clear();
-        FunctionTables.clear();
+        FunctionTables.Empty();
     }
 
 private:
@@ -62,10 +62,12 @@ private:
 
     sol::table& Empty(sol::state_view L)
     {
-        static sol::table Dummy;
-        if (!Dummy.valid())
-            Dummy = L.create_table();
-        return Dummy;
+        static std::unordered_map<lua_State*, sol::table> DummyPerState;
+        auto* key = L.lua_state();
+        auto it = DummyPerState.find(key);
+        if (it == DummyPerState.end() || !it->second.valid())
+            it = DummyPerState.emplace(key, L.create_table()).first;
+        return it->second;
     }
 };
 

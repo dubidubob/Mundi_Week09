@@ -444,6 +444,7 @@ nul
 CLAUDE.md
 GEMINI.md
 .env
+Document/*
 
 # Untracked Data Files
 /Mundi/Data/untracked/**
